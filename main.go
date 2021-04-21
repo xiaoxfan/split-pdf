@@ -31,6 +31,7 @@ func main() {
 		log.Fatal(err)
 	}
 	r := gin.New()
+	r.Use(gin.Logger())
 	r.POST("/split-pdf", SplitPDF)
 	r.Static("/images", "./images")
 	if err := r.Run(":" + port); err != nil {
