@@ -2,7 +2,7 @@ package util
 
 import (
 	"errors"
-	"github.com/xiaoxfan/go-fitz"
+	"github.com/gen2brain/go-fitz"
 	"log"
 	"sync"
 )
