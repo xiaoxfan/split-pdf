@@ -54,6 +54,11 @@ func Pdf2Images1(src []byte, dpi float64, pageLimit int) ([][]byte, error) {
 	wg.Add(doc.NumPage())
 	for n := 0; n < doc.NumPage(); n++ {
 		go func(n int) {
+			defer func() {
+				if p := recover(); p != nil {
+					log.Println("panic", p)
+				}
+			}()
 			defer wg.Done()
 			doc, err := fitz.NewFromMemory(src)
 			if err != nil {
