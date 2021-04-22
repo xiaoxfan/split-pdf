@@ -90,7 +90,7 @@ func SplitPDF(c *gin.Context) {
 		c.JSON(http.StatusOK, Fail(err.Error()))
 		return
 	}
-	images, err := util.Pdf2Images(fBytes, p.DPI, -1)
+	images, err := util.Pdf2Images1(fBytes, p.DPI, -1)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusOK, Fail(err.Error()))
