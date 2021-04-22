@@ -31,6 +31,7 @@ func main() {
 		log.Fatal(err)
 	}
 	r := gin.New()
+	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 	r.POST("/split-pdf", SplitPDF)
 	r.Static("/images", "./images")
@@ -94,8 +95,6 @@ func SplitPDF(c *gin.Context) {
 	var images [][]byte
 	if p.V == 0 {
 		images, err = util.Pdf2Images1(fBytes, p.DPI, -1)
-	} else if p.V == 3 {
-		images, err = util.Pdf2Images3(fBytes, p.DPI, -1)
 	} else {
 		images, err = util.Pdf2Images(fBytes, p.DPI, -1)
 	}
