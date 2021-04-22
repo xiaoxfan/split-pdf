@@ -67,6 +67,7 @@ func Fail(msg string) *Result {
 type Param struct {
 	File *multipart.FileHeader `form:"file" binding:"required"`
 	DPI  float64               `form:"dpi"`
+	V    int                   `form:"v"`
 }
 
 func SplitPDF(c *gin.Context) {
@@ -90,7 +91,12 @@ func SplitPDF(c *gin.Context) {
 		c.JSON(http.StatusOK, Fail(err.Error()))
 		return
 	}
-	images, err := util.Pdf2Images1(fBytes, p.DPI, -1)
+	var images [][]byte
+	if p.V == 0 {
+		images, err = util.Pdf2Images1(fBytes, p.DPI, -1)
+	} else {
+		images, err = util.Pdf2Images(fBytes, p.DPI, -1)
+	}
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusOK, Fail(err.Error()))
