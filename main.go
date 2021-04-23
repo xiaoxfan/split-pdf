@@ -95,8 +95,11 @@ func SplitPDF(c *gin.Context) {
 	var images [][]byte
 	if p.V == 1 {
 		images, err = util.Pdf2Images1(fBytes, p.DPI, -1)
+	} else if p.V == 2 {
+		images, err = util.Pdf2Images2(fBytes, p.DPI, -1)
 	} else {
 		images, err = util.Pdf2Images(fBytes, p.DPI, -1)
+
 	}
 	if err != nil {
 		log.Println(err)

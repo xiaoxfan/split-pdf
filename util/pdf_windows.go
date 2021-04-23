@@ -36,7 +36,7 @@ func Pdf2Images(src []byte, dpi float64, pageLimit int) ([][]byte, error) {
 	}
 	return ret, nil
 }
-func Pdf2Images1(src []byte, dpi float64, pageLimit int) ([][]byte, error) {
+func Pdf2Images2(src []byte, dpi float64, pageLimit int) ([][]byte, error) {
 	if dpi <= 0 {
 		dpi = defaultDPI
 	}
@@ -49,12 +49,38 @@ func Pdf2Images1(src []byte, dpi float64, pageLimit int) ([][]byte, error) {
 		return nil, PageSizeErr
 	}
 	ret := make([][]byte, doc.NumPage())
-	wg := new(sync.WaitGroup)
-	wg.Add(doc.NumPage())
 	for n := 0; n < doc.NumPage(); n++ {
+		ret[n], err = doc.ImagePNG1(n, dpi)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return ret, nil
+}
+func Pdf2Images1(src []byte, dpi float64, pageLimit int) ([][]byte, error) {
+	if dpi <= 0 {
+		dpi = defaultDPI
+	}
+	doc1, err := fitz.NewFromMemory(src)
+	if err != nil {
+		return nil, err
+	}
+	defer doc1.Close()
+	if pageLimit > 0 && doc1.NumPage() > pageLimit {
+		return nil, PageSizeErr
+	}
+	srcs := make([][]byte, doc1.NumPage())
+	for i := range srcs {
+		srcs[i] = make([]byte, len(src))
+		copy(srcs[i], src)
+	}
+	ret := make([][]byte, doc1.NumPage())
+	wg := new(sync.WaitGroup)
+	wg.Add(doc1.NumPage())
+	for n := 0; n < doc1.NumPage(); n++ {
 		go func(n int) {
 			defer wg.Done()
-			doc, err := fitz.NewFromMemory(src)
+			doc, err := fitz.NewFromMemory(srcs[n])
 			if err != nil {
 				log.Println(err)
 				return
