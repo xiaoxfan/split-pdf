@@ -61,7 +61,7 @@ func Pdf2Images1(src []byte, dpi float64, pageLimit int) ([][]byte, error) {
 				return
 			}
 			defer doc.Close()
-			ret[n], err = doc.ImagePNG(n, dpi)
+			ret[n], err = doc.ImagePNG1(n, dpi)
 			if err != nil {
 				log.Println(err)
 				return
